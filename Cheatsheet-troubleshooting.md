@@ -98,10 +98,6 @@ vb. nmap -A -T4, nmap, -sS -sU
     * fileserver: testparm
     * DNS (BIND): named-checkconf, named-checkzone
 
- ### 4a. BIND
-- BIND noemt `named.service` door systemMD
-
-
 # NGINX
 ->*Commando's hetzelfde als 'httpd' maar dan met 'nginx' als naam,enkele uitzonderingen:*
 -**Operaties op nginx**
