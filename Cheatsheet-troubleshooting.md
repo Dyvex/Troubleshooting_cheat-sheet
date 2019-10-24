@@ -1,6 +1,5 @@
-# Trouble shoot checklist
+# Cheat sheet Troubleshoot-test
 ### Bottom-up werking essentieel! 
-
 ## 1. Physical layer and network access layer
 ## Netwerkinterface
 - Kabel correct aangesloten? -> kijk naar LEDs
@@ -8,11 +7,11 @@
 - VirtualBox: "Cable connected"?
 - terminal: `ip link` -> zien of interfaces 'up' zijn
 ## 2. Internetlayer - BINNEN
-### EERST op machine zelf kijken
+ **EERST op machine zelf kijken**
 - IP adres en network mask
 - default gateway
 - DNS server
-### Dan pas "naar buiten" kijken
+**Dan pas "naar buiten" kijken**
 - Gateway bereikbaar?
 - DNS-server beschikbaar?
 - Andere hosts op het LAN
@@ -21,7 +20,7 @@ IP-adres: `ip a` commando
 - Host-only: **192.168.65.101-254**
 - `/etc/sysconfig/network-scripts/ifcfg-IFACE` 
     (*IFACE = interface (bv.eth0*)). 
-    -> Hier controleer je die instellingen vd interface
+    -> *Hier controleer je die instellingen vd interface*
     > **eth0/enp0s3** = heeft DHCP protocol(dynamisch)
     > **eth1/enp0s8** = statische IP(manueel geconfigureerd) OOK SUBMASK   INVULLEN
     -> **Hoe config file aanpassen?**
@@ -102,8 +101,19 @@ vb. nmap -A -T4, nmap, -sS -sU
  ### 4a. BIND
 - BIND noemt `named.service` door systemMD
 
-## TIPS
 
+# NGINX
+->*Commando's hetzelfde als 'httpd' maar dan met 'nginx' als naam,enkele uitzonderingen:*
+-**Operaties op nginx**
+    * `systemctl quit nginx`
+    * `systemctl reload nginx`
+-**Test nginx configuration**
+    * `systemctl config nginx`
+    * `nginx -t`
+-**check nginx versie**
+    * `systemctl -v nginx`
+-**Commando help**
+    * `systemctl -? nginx`
 **READ THE ERROR MESSAGES!!!**
 - Op welk nieveau van TCP/IP zit het probleem?
     > Internet? transport? Applicatie?
