@@ -21,10 +21,10 @@ IP-adres: `ip a` commando
 - `/etc/sysconfig/network-scripts/ifcfg-IFACE` 
     (*IFACE = interface (bv.eth0*)). 
     -> *Hier controleer je die instellingen vd interface*
-    > **eth0/enp0s3** = heeft DHCP protocol(dynamisch)
-    > **eth1/enp0s8** = statische IP(manueel geconfigureerd) OOK SUBMASK   INVULLEN
+    - **eth0/enp0s3** = heeft DHCP protocol(dynamisch)
+    - **eth1/enp0s8** = statische IP(manueel geconfigureerd) OOK SUBMASK   INVULLEN
     -> **Hoe config file aanpassen?**
-    > bv. `vi /etc/sysconfig/network-scripts/ifcfg-eth0`
+        > bv. `vi /etc/sysconfig/network-scripts/ifcfg-eth0`
 Default gateway: `ip route`  commando 
 - VBox NAT: 10.0.2.2 altijd
 - thuisnetwerken vaak: 192.168.0.1 of 192.168.1.1
@@ -41,53 +41,28 @@ Default gateway: `ip route`  commando
 - Traceroute naar buiten
     - traceroute, tracert, tcpraceroute, tracepath
 **OPGELET:** ping/tracert werkt niet altijd. OOK NIET OP HOGENT NETWERK
-    ### Bind
-    - **bekijken van log files**
-        * sudo journalctl -f -u named.service
-            > Indien de query logging nog niet aanstaat kan je `rndc querylog on` gebruiken
-    - **Configuration files checken**
-        * **Main configuration file**: `do named-checkconf /etc/named.conf`
-        * **zone files**: `sudo named-checkzone ZONE ZONE_FILE`
-            > Een concreet voorbeeld: 
-                - `sudo named-checkzone cynalco.com /var/named/cynalco.com` (forward lookup zone)
-                - `sudo named-checkzone 2.0.192.in-addr.arpa /var/named/2.0.192.in-addr.arpa` (reverse lookup zone)
-    - * **Testen van de availability**
-        * **gebruik van 'dig'**: `dig @DNS_SERVER_IP HOSTNAME`
-            * *dig www.hogent.be*
-            * *dig +short www.hogent.be*
-            * *dig +short @8.8.8.8 www.hogent.be*
-            * *dig+short NS hogent.be* -> Kijken naar wat de authoritativez nameserver van het domein is
-            * *dig +short -x 195.130.131.1* -> reverse lookup
-        * **gebruik van 'nslookup'**: `nslookup HOSTNAME DNS_SERVER_IP`
-            * *nslookup www.hogent.be*
-            * *nslookup www.hogent.be 8.8.8.8*
-    - **Soorten ERRORS en hoe oplossen**
-        * **Running queries locally works, but not remotely**
-            > Kijken naar de main-config file in **/etc/named.conf**,deze kunnen vaak nog op default staan (dus localhost)
-            Door **listen-on** en **allow-query** te wijzigen naar **any** ipv **localhost** zal elke host kunnen query'en naar deze                 host.
-    
         
             
 ## 3. Transportlaag
 Zijn de juiste poorten open/draait de service
 **Belangrijke commando's**
 - **Systemctl** 
-    > `sudo systemctl status SERVICE.service` (bv. httpd.service) 
+    - `sudo systemctl status SERVICE.service` (bv. httpd.service)\ 
             -> toont aan of service draait,poort 80 en 434(tls) moeten openstaan!
-    > `sudo systemctl start/enable/kill/disable/kill SERVICE.service`
+    - `sudo systemctl start/enable/kill/disable/kill SERVICE.service`\
             -> service operaties uitvoeren(disable/enable -> al dan niet                                 opstarten bij de boot)
-    > `sudo systemctl list-units --type service`
+    - `sudo systemctl list-units --type service`\
             -> Lijst van alle services
-    > `sudo systemctl --failed`
+    - `sudo systemctl --failed`\
             -> geeft lijst van alles gefaalde services bij de boot
 - **firewall-cmd**
-    > `sudo firewall-cmd --list-all` -> geeft lijstje van de actieve                                          firewall instellingen
-    > `sudo firewall-cmd --add-service=SERVICE --permanent`
+    - `sudo firewall-cmd --list-all` -> geeft lijstje van de actieve                                          firewall instellingen
+    - `sudo firewall-cmd --add-service=SERVICE --permanent`
             -> service permanent toevoegen
-    > `sudo firewall-cmd --add-port=PORTNUMMER/tcp --permanent`
+    - `sudo firewall-cmd --add-port=PORTNUMMER/tcp --permanent`
             -> port permanent toevoegen
-    > zelfde voor een port/service te verwijderen maar dan                  *--remove-service* of *--remove-port*
-    > `sudo firewall-cmd --get-services`
+    - zelfde voor een port/service te verwijderen maar dan                  *--remove-service* of *--remove-port*
+    - `sudo firewall-cmd --get-services`
 - `sudo ss -tulpn` -> kijkt of services draaien
     * t = tcp
     * u = udp
@@ -116,52 +91,84 @@ vb. nmap -A -T4, nmap, -sS -sU
 
 - **Valideren van Syntax in een config file:**
     * webbrowser: 
-        > -> `sudo apachectl configtest` -> httpd
-        > **ALTIJD HERSTARTEN SERVICE na test of aanpassingen!**
-        > -> `sudo systemctl restart httpd.service`
-        > Na wijziging van een service altijd **herstarten van de service**!!
-        > -> `sudo systemctl restart SERVICE`
+        - -> `sudo apachectl configtest` -> httpd
+            > **ALTIJD HERSTARTEN SERVICE na test of aanpassingen!**
+        - -> `sudo systemctl restart httpd.service`
+            > Na wijziging van een service altijd **herstarten van de service**!!
+        - -> `sudo systemctl restart SERVICE`
     * fileserver: testparm
     * DNS (BIND): named-checkconf, named-checkzone
 
-## NGINX
-->*Commando's hetzelfde als 'httpd' maar dan met 'nginx' als naam,enkele uitzonderingen:*
--**Operaties op nginx**
-    * `systemctl quit nginx`
-    * `systemctl reload nginx`
--**Test nginx configuration**
-    * `systemctl config nginx`
-    * `nginx -t`
--**check nginx versie**
-    * `systemctl -v nginx`
--**Commando help**
-    * `systemctl -? nginx`
-**READ THE ERROR MESSAGES!!!**
-- Op welk nieveau van TCP/IP zit het probleem?
-    > Internet? transport? Applicatie?
-      Foutboodschap = shortcut voor startpunt troubleshoot
-      **LET OP:** Foutboodschap komt in logs, niet op console
-
+    ### NGINX
+    ->*Commando's hetzelfde als 'httpd' maar dan met 'nginx' als naam,enkele uitzonderingen:*
+    - **Operaties op nginx**
+        * `systemctl quit nginx`
+        * `systemctl reload nginx`
+    - **Test nginx configuration**
+        * `systemctl config nginx`
+        * `nginx -t`
+    - **check nginx versie**
+        * `systemctl -v nginx`
+    - **Commando help**
+        * `systemctl -? nginx`
+    **READ THE ERROR MESSAGES!!!**
+        - Op welk nieveau van TCP/IP zit het probleem?
+        > Internet? transport? Applicatie?
+        Foutboodschap = shortcut voor startpunt troubleshoot
+        **LET OP:** Foutboodschap komt in logs, niet op console
+    ### Bind
+    - **bekijken van log files**
+        * sudo journalctl -f -u named.service
+            > Indien de query logging nog niet aanstaat kan je `rndc querylog on` gebruiken
+    - **Configuration files checken**
+        * **Main configuration file**: `do named-checkconf /etc/named.conf`
+        * **zone files**: `sudo named-checkzone ZONE ZONE_FILE`
+            > Een concreet voorbeeld: 
+                - `sudo named-checkzone cynalco.com /var/named/cynalco.com` (forward lookup zone)
+                - `sudo named-checkzone 2.0.192.in-addr.arpa /var/named/2.0.192.in-addr.arpa` (reverse lookup zone)
+    - * **Testen van de availability**
+        * **gebruik van 'dig'**: `dig @DNS_SERVER_IP HOSTNAME`
+            * *dig www.hogent.be*
+            * *dig +short www.hogent.be*
+            * *dig +short @8.8.8.8 www.hogent.be*
+            * *dig+short NS hogent.be* -> Kijken naar wat de authoritativez nameserver van het domein is
+            * *dig +short -x 195.130.131.1* -> reverse lookup
+        * **gebruik van 'nslookup'**: `nslookup HOSTNAME DNS_SERVER_IP`
+            * *nslookup www.hogent.be*
+            * *nslookup www.hogent.be 8.8.8.8*
+    - **Soorten ERRORS en hoe oplossen**
+        * **Running queries locally works, but not remotely**
+            > Kijken naar de main-config file in **/etc/named.conf**,deze kunnen vaak nog op default staan (dus localhost)
+            Door **listen-on** en **allow-query** te wijzigen naar **any** ipv **localhost** zal elke host kunnen query'en naar deze                 host.
+        * **End fully qualified domain names with a dot**
+            > Uitvoer  zou dus zo moeten zijn:
+                www.hogent.be.		2796	IN	A	178.62.144.90
+            -> Je kan dit testen met `$ORIGIN www.hogent.be.`
+        * **Syntax errors in de config file**
+            1.  Voer dan eerst `named-checkconf` uit om te kijken **VOOR HET STARTEN OF HERSTARTEN VAN DE NAMED SERVICE**
+            2.  Als het probleem er nog steeds is,kijk dan naar de logs in `/var/named/data/named.run`
+            3.  Je kan altijd ook eens kijken naar het geregistreerd domein of dit nog oke is met `whois www.hogent.be`
+    
 ### Voorbeelenden foutboodschap
 - `No route to host`
-    > Internetlaag
-    > IP configuratie
-    > netwerklaag
+    - Internetlaag
+    - IP configuratie
+    - netwerklaag
 
 - `Connection refused`
-    > transportlaag
-    > tcp protocol
-    > kijk niet naar ip config of kabels, het zit in transport
-    > service draait niet
+    - transportlaag
+    - tcp protocol
+    - kijk niet naar ip config of kabels, het zit in transport
+    - service draait niet
 
 - `Unable to resolve host`
-    > Internet/applicatie laag
-    > DNS server niet beschikbaar
+    - Internet/applicatie laag
+    - DNS server niet beschikbaar
 
 - `Error 404: ... Not found`
-    > applicatielaag
-    > appache/webserver
-    > URL verkeerd
+    - applicatielaag
+    - appache/webserver
+    - URL verkeerd
                         
 
 **Belangrijke LOG-Directories en anderen**
