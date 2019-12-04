@@ -41,7 +41,33 @@ Default gateway: `ip route`  commando
 - Traceroute naar buiten
     - traceroute, tracert, tcpraceroute, tracepath
 **OPGELET:** ping/tracert werkt niet altijd. OOK NIET OP HOGENT NETWERK
-
+    ### Bind
+    - **bekijken van log files**
+        * sudo journalctl -f -u named.service
+            > Indien de query logging nog niet aanstaat kan je `rndc querylog on` gebruiken
+    - **Configuration files checken**
+        * **Main configuration file**: `do named-checkconf /etc/named.conf`
+        * **zone files**: `sudo named-checkzone ZONE ZONE_FILE`
+            > Een concreet voorbeeld: 
+                - `sudo named-checkzone cynalco.com /var/named/cynalco.com` (forward lookup zone)
+                - `sudo named-checkzone 2.0.192.in-addr.arpa /var/named/2.0.192.in-addr.arpa` (reverse lookup zone)
+    - * **Testen van de availability**
+        * **gebruik van 'dig'**: `dig @DNS_SERVER_IP HOSTNAME`
+            * *dig www.hogent.be*
+            * *dig +short www.hogent.be*
+            * *dig +short @8.8.8.8 www.hogent.be*
+            * *dig+short NS hogent.be* -> Kijken naar wat de authoritativez nameserver van het domein is
+            * *dig +short -x 195.130.131.1* -> reverse lookup
+        * **gebruik van 'nslookup'**: `nslookup HOSTNAME DNS_SERVER_IP`
+            * *nslookup www.hogent.be*
+            * *nslookup www.hogent.be 8.8.8.8*
+    - **Soorten ERRORS en hoe oplossen**
+        * **Running queries locally works, but not remotely**
+            > Kijken naar de main-config file in **/etc/named.conf**,deze kunnen vaak nog op default staan (dus localhost)
+            Door **listen-on** en **allow-query** te wijzigen naar **any** ipv **localhost** zal elke host kunnen query'en naar deze                 host.
+    
+        
+            
 ## 3. Transportlaag
 Zijn de juiste poorten open/draait de service
 **Belangrijke commando's**
@@ -98,7 +124,7 @@ vb. nmap -A -T4, nmap, -sS -sU
     * fileserver: testparm
     * DNS (BIND): named-checkconf, named-checkzone
 
-# NGINX
+## NGINX
 ->*Commando's hetzelfde als 'httpd' maar dan met 'nginx' als naam,enkele uitzonderingen:*
 -**Operaties op nginx**
     * `systemctl quit nginx`
@@ -136,13 +162,14 @@ vb. nmap -A -T4, nmap, -sS -sU
     > applicatielaag
     > appache/webserver
     > URL verkeerd
-
+                        
 
 **Belangrijke LOG-Directories en anderen**
 - Ken de locaties van logs:
-    > `/var/log/messages` (hoofdlog)
-    > `/var/log/audit/audit.log` (SELinux)
-    > `/var/log/httpd/error_log`
-    > `/var/log/samba/*`
-    > `/var/log/vsftpd/*`
-    > `/etc/httpd/httpd.conf`
+    * `/var/log/messages` (hoofdlog)
+    * `/var/log/audit/audit.log` (SELinux)
+    * `/var/log/httpd/error_log`
+    * `/var/log/samba/*`
+    * `/var/log/vsftpd/*`
+    * `/var/log/named.conf`
+    * `/etc/httpd/httpd.conf`
