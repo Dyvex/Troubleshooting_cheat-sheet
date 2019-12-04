@@ -172,8 +172,7 @@ vb. nmap -A -T4, nmap, -sS -sU
             1. Zone files can be modified on the primary name servers. Once resource records have been added, modified, or removed, you                 must remember to increment the zone serial number. Here is the existing serial number of the example.com zone.
             2. If the initial serial number begins at 0, then the next value will be 1.
             3. Kijken naar de reverse lookup  van het adres met **nano /var/named/2.0.192.in-addr.arpa** (als ip 192.0.2.0 is)
-                - Uitvoer zou dan moeten zijn:
-                        // ... 
+                * Uitvoer zou dan moeten zijn:\
                             $TTL 3H\
                             @   IN SOA  @ hostmaster.example.com. (\
                             2    ; serial\
@@ -188,6 +187,7 @@ vb. nmap -A -T4, nmap, -sS -sU
                             10       IN    PTR   host1.example.com.\
                             11       IN    PTR   host2.example.com.\
                             12       IN    PTR   host3.example.com.\
+                         
                             
             4. Once the zone serial number has been incremented, the zone needs to be reloaded. This can be done **without restarting                   the named process.** Met `rdnc reload example.com`
 ### Voorbeelenden foutboodschap
