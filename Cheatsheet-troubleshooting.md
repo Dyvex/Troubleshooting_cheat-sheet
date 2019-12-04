@@ -47,11 +47,11 @@ Default gateway: `ip route`  commando
 Zijn de juiste poorten open/draait de service
 **Belangrijke commando's**
 - **Systemctl** 
-    - `sudo systemctl status SERVICE.service` (bv. httpd.service)\ 
+    - **`sudo systemctl status SERVICE.service`** (bv. httpd.service)
             -> toont aan of service draait,poort 80 en 434(tls) moeten openstaan!
-    - `sudo systemctl start/enable/kill/disable/kill SERVICE.service`\
+    - `sudo systemctl start/enable/kill/disable/kill SERVICE.service`**
             -> service operaties uitvoeren(disable/enable -> al dan niet                                 opstarten bij de boot)
-    - `sudo systemctl list-units --type service`\
+    - `sudo systemctl list-units --type service`
             -> Lijst van alle services
     - `sudo systemctl --failed`\
             -> geeft lijst van alles gefaalde services bij de boot
@@ -91,11 +91,11 @@ vb. nmap -A -T4, nmap, -sS -sU
 
 - **Valideren van Syntax in een config file:**
     * webbrowser: 
-        - -> `sudo apachectl configtest` -> httpd
+        - -> **`sudo apachectl configtest`** -> httpd
             > **ALTIJD HERSTARTEN SERVICE na test of aanpassingen!**
-        - -> `sudo systemctl restart httpd.service`
+        - -> **`sudo systemctl restart httpd.service`**
             > Na wijziging van een service altijd **herstarten van de service**!!
-        - -> `sudo systemctl restart SERVICE`
+        - -> **`sudo systemctl restart SERVICE`**
     * fileserver: testparm
     * DNS (BIND): named-checkconf, named-checkzone
 
@@ -148,7 +148,26 @@ vb. nmap -A -T4, nmap, -sS -sU
             1.  Voer dan eerst `named-checkconf` uit om te kijken **VOOR HET STARTEN OF HERSTARTEN VAN DE NAMED SERVICE**
             2.  Als het probleem er nog steeds is,kijk dan naar de logs in `/var/named/data/named.run`
             3.  Je kan altijd ook eens kijken naar het geregistreerd domein of dit nog oke is met `whois www.hogent.be`
-    
+        * **The Serial**
+            1. Zone files can be modified on the primary name servers. Once resource records have been added, modified, or removed, you                 must remember to increment the zone serial number. Here is the existing serial number of the example.com zone.
+            2. If the initial serial number begins at 0, then the next value will be 1.
+            3. Kijken naar de reverse lookup  van het adres met **nano /var/named/2.0.192.in-addr.arpa** (als ip 192.0.2.0 is)
+                - Uitvoer zou dan moeten zijn:\
+                    $TTL 3H
+                    @   IN SOA  @ hostmaster.example.com. (
+                    2    ; serial
+                    3H   ; refresh
+                    1H   ; retry
+                    1W   ; expire
+                    3H ) ; minimum
+                    @        IN    NS    ns1.example.com.
+                    @        IN    NS    ns2.example.com.
+                    1        IN    PTR   ns1.example.com.
+                    2        IN    PTR   ns2.example.com.
+                    10       IN    PTR   host1.example.com.
+                    11       IN    PTR   host2.example.com.
+                    12       IN    PTR   host3.example.com.
+            4. Once the zone serial number has been incremented, the zone needs to be reloaded. This can be done **without restarting                   the named process.** Met `rdnc reload example.com`
 ### Voorbeelenden foutboodschap
 - `No route to host`
     - Internetlaag
