@@ -117,9 +117,11 @@ vb. nmap -A -T4, nmap, -sS -sU
         Foutboodschap = shortcut voor startpunt troubleshoot
         **LET OP:** Foutboodschap komt in logs, niet op console
     ### Bind
+    - **Installeren van nslookup,dig en host**
+        * **`sudo yum install bind-utils`**
     - **bekijken van log files**
-        * sudo journalctl -f -u named.service
-            > Indien de query logging nog niet aanstaat kan je `rndc querylog on` gebruiken
+        * **`sudo journalctl -f -u named.service`**
+            > Indien de query logging nog niet aanstaat kan je **`rndc querylog on`** gebruiken
     - **Configuration files checken**
         * **Main configuration file**: `do named-checkconf /etc/named.conf`
         * **zone files**: `sudo named-checkzone ZONE ZONE_FILE`
