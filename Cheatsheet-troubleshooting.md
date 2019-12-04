@@ -124,16 +124,34 @@ vb. nmap -A -T4, nmap, -sS -sU
             > Indien de query logging nog niet aanstaat kan je **`rndc querylog on`** gebruiken
     - **Configuration files checken**
         * **Main configuration file**: `do named-checkconf /etc/named.conf`
+            * Deze zou er dus zo moeten uitzien:
+                    // ...
+                    
+                    options {
+                    listen-on port 53 { any; };
+                    listen-on-v6 port 53 { any; };
+                    directory   "/var/named";
+
+                    allow-query     { any; };
+                    allow-transfer  { any; };
+
+                    recursion no;
+
+                    rrset-order { order random; };
+                    };
         * **zone files**: `sudo named-checkzone ZONE ZONE_FILE`
             - Een concreet voorbeeld: 
                 - `sudo named-checkzone cynalco.com /var/named/cynalco.com` (forward lookup zone)
                 - `sudo named-checkzone 2.0.192.in-addr.arpa /var/named/2.0.192.in-addr.arpa` (reverse lookup zone)
     - * **Testen van de availability**
         * **gebruik van 'dig'**: `dig @DNS_SERVER_IP HOSTNAME`
+            * *dig www.hogent.be @193.190.172.1 +short*  --> **Forward lookup**
+            * *dig -x 178.62.144.92* --> **Reverse lookup**
+            * *dig NS hogent.be* --> **authoritve name server of hogent.be**
+            * *dig SOA hogent.be* --> **Start-of-Authority section of hogent.be**
             * *dig www.hogent.be*
             * *dig +short www.hogent.be*
             * *dig +short @8.8.8.8 www.hogent.be*
-            * *dig+short NS hogent.be* -> Kijken naar wat de authoritativez nameserver van het domein is
             * *dig +short -x 195.130.131.1* -> reverse lookup
         * **gebruik van 'nslookup'**: `nslookup HOSTNAME DNS_SERVER_IP`
             * *nslookup www.hogent.be*
@@ -155,20 +173,22 @@ vb. nmap -A -T4, nmap, -sS -sU
             2. If the initial serial number begins at 0, then the next value will be 1.
             3. Kijken naar de reverse lookup  van het adres met **nano /var/named/2.0.192.in-addr.arpa** (als ip 192.0.2.0 is)
                 - Uitvoer zou dan moeten zijn:
-                   > $TTL 3H\
-                    @   IN SOA  @ hostmaster.example.com. (\
-                    2    ; serial\
-                    3H   ; refresh\
-                    1H   ; retry\
-                    1W   ; expire\
-                    3H ) ; minimum\
-                    @        IN    NS    ns1.example.com.\
-                    @        IN    NS    ns2.example.com.\
-                    1        IN    PTR   ns1.example.com.\
-                    2        IN    PTR   ns2.example.com.\
-                    10       IN    PTR   host1.example.com.\
-                    11       IN    PTR   host2.example.com.\
-                    12       IN    PTR   host3.example.com.\
+                        // ... 
+                            $TTL 3H\
+                            @   IN SOA  @ hostmaster.example.com. (\
+                            2    ; serial\
+                            3H   ; refresh\
+                            1H   ; retry\
+                            1W   ; expire\
+                            3H ) ; minimum\
+                            @        IN    NS    ns1.example.com.\
+                            @        IN    NS    ns2.example.com.\
+                            1        IN    PTR   ns1.example.com.\
+                            2        IN    PTR   ns2.example.com.\
+                            10       IN    PTR   host1.example.com.\
+                            11       IN    PTR   host2.example.com.\
+                            12       IN    PTR   host3.example.com.\
+                            
             4. Once the zone serial number has been incremented, the zone needs to be reloaded. This can be done **without restarting                   the named process.** Met `rdnc reload example.com`
 ### Voorbeelenden foutboodschap
 - `No route to host`
