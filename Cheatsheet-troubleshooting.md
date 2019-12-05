@@ -116,6 +116,7 @@ vb. nmap -A -T4, nmap, -sS -sU
         > Internet? transport? Applicatie?
         Foutboodschap = shortcut voor startpunt troubleshoot
         **LET OP:** Foutboodschap komt in logs, niet op console
+        
     ### Bind
     - **Installeren van nslookup,dig en host**
         * **`sudo yum install bind-utils`**
@@ -132,10 +133,10 @@ vb. nmap -A -T4, nmap, -sS -sU
                     listen-on-v6 port 53 { any; };
                     directory   "/var/named";
 
-                    allow-query     { any; };   (**should be no on authoritative name server**)
+                    allow-query     { any; };   
                     allow-transfer  { any; };
 
-                    recursion no;
+                    recursion no;       ( recursion should be no on authoritative name server )
 
                     rrset-order { order random; };
                     };
@@ -145,6 +146,26 @@ vb. nmap -A -T4, nmap, -sS -sU
                 - `named-checkconf`
                 - `named-checkzone example.com /var/named/example.conf`
                 - `named-checkzone 16.172.in-addr.arpa /var/named/16.172.in-addr.arpa`
+    - * **Hoe de forward lookup zones er moeten uitzien (bijvoorbeeld bij example.com)**
+            //...
+            
+              zone "example.com" IN {
+                type master;
+                file "example.com";
+                notify yes;
+                allow-update { none; };
+              };
+               
+     - * **Hoe de forward lookup zones er moeten uitzien (bijvoorbeeld bij example.com)**
+            //...
+            
+                zone "56.168.192.in-addr.arpa" IN {
+                    type master;
+                    file "56.168.192.in-addr.arpa";
+                    notify yes;
+                    allow-update { none; };
+                };
+                          
     - * **Testen van de availability**
         * **gebruik van 'dig'**: `dig @DNS_SERVER_IP HOSTNAME`
             * *dig www.hogent.be @193.190.172.1 +short*  --> **Forward lookup**
@@ -164,7 +185,9 @@ vb. nmap -A -T4, nmap, -sS -sU
             Door **listen-on** en **allow-query** te wijzigen naar **any** ipv **localhost** zal elke host kunnen query'en naar deze                 host.
         * **End fully qualified domain names with a dot**
             - Uitvoer  zou dus zo moeten zijn:
-               > www.hogent.be.	    2796	    IN	    A	    178.62.144.90 \
+               //...
+               
+                    www.hogent.be.	    2796	    IN	    A	    178.62.144.90 \
             -> Je kan dit testen met `$ORIGIN www.hogent.be.`
         * **Syntax errors in de config file**
             1.  Voer dan eerst `named-checkconf` uit om te kijken **VOOR HET STARTEN OF HERSTARTEN VAN DE NAMED SERVICE**
@@ -174,21 +197,31 @@ vb. nmap -A -T4, nmap, -sS -sU
             1. Zone files can be modified on the primary name servers. Once resource records have been added, modified, or removed, you                 must remember to increment the zone serial number. Here is the existing serial number of the example.com zone.
             2. If the initial serial number begins at 0, then the next value will be 1.
             3. Kijken naar de reverse lookup  van het adres met **nano /var/named/2.0.192.in-addr.arpa** (als ip 192.0.2.0 is)
-                * Uitvoer zou dan moeten zijn:\
-                            $TTL 3H\
-                            @   IN SOA  @ hostmaster.example.com. (\
-                            2    ; serial\
-                            3H   ; refresh\
-                            1H   ; retry\
-                            1W   ; expire\
-                            3H ) ; minimum\
-                            @        IN    NS    ns1.example.com.\
-                            @        IN    NS    ns2.example.com.\
-                            1        IN    PTR   ns1.example.com.\
-                            2        IN    PTR   ns2.example.com.\
-                            10       IN    PTR   host1.example.com.\
-                            11       IN    PTR   host2.example.com.\
-                            12       IN    PTR   host3.example.com.\
+                * Uitvoer zou dan moeten zijn:( in de 4de kolom zou er bijvoorbeeld geen ns1.example.com mogen staan! maar enkel de                         alias of ip)
+                
+                            $ORIGIN example.com
+                            $TTL 1W
+
+                            @ IN SOA ns1.example.com. hostmaster.example.com. (
+                            18042020 
+                            1D
+                            1H
+                            1W
+                            1D 
+                            )
+
+                                                 IN  NS     ns1
+                                                 IN  NS     ns1
+
+                            ns1                  IN  A      192.168.56.10
+                            ns2                  IN  A      192.168.56.11
+                            dc                   IN  A      192.168.56.40
+                            web                  IN  A      192.168.56.172
+                            www                  IN  CNAME  web
+                            db                   IN  A      192.168.56.173
+
+                            priv0001             IN  A      172.16.0.10
+                            priv0002             IN  A      172.16.0.11
                          
                             
             4. Once the zone serial number has been incremented, the zone needs to be reloaded. This can be done **without restarting                   the named process.** Met `rdnc reload example.com`
