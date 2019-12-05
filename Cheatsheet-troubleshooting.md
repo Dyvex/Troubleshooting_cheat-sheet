@@ -142,8 +142,9 @@ vb. nmap -A -T4, nmap, -sS -sU
         
         * **zone files**: `sudo named-checkzone ZONE ZONE_FILE`
             - Een concreet voorbeeld: 
-                - `sudo named-checkzone cynalco.com /var/named/cynalco.com` (forward lookup zone)
-                - `sudo named-checkzone 2.0.192.in-addr.arpa /var/named/2.0.192.in-addr.arpa` (reverse lookup zone)
+                - `named-checkconf`
+                - `named-checkzone example.com /var/named/example.conf`
+                - `named-checkzone 16.172.in-addr.arpa /var/named/16.172.in-addr.arpa`
     - * **Testen van de availability**
         * **gebruik van 'dig'**: `dig @DNS_SERVER_IP HOSTNAME`
             * *dig www.hogent.be @193.190.172.1 +short*  --> **Forward lookup**
