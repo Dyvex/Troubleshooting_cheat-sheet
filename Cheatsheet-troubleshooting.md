@@ -132,13 +132,14 @@ vb. nmap -A -T4, nmap, -sS -sU
                     listen-on-v6 port 53 { any; };
                     directory   "/var/named";
 
-                    allow-query     { any; };
+                    allow-query     { any; };   (**should be no on authoritative name server**)
                     allow-transfer  { any; };
 
                     recursion no;
 
                     rrset-order { order random; };
                     };
+        
         * **zone files**: `sudo named-checkzone ZONE ZONE_FILE`
             - Een concreet voorbeeld: 
                 - `sudo named-checkzone cynalco.com /var/named/cynalco.com` (forward lookup zone)
