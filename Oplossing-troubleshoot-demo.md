@@ -77,10 +77,10 @@
   * Nu zou de main configuration file volledig in orde moeten zijn.
   
 ### 5. Om te bevestigen dat de config files in orde zijn kan je een controle uitvoeren als volgt:
-    - `named-checkconf`
-    - `named-checkzone example.com /var/named/example.com`
-    - `named-checkzone 16.172.in-addr.arpa /var/named/16.172.in-addr.arpa`
-    - `named-checkzone 56.168.192.in-addr.arpa /var/named/56.168.192.in-addr.arpa`
+  - `named-checkconf`
+  - `named-checkzone example.com /var/named/example.com`
+  - `named-checkzone 16.172.in-addr.arpa /var/named/16.172.in-addr.arpa`
+  - `named-checkzone 56.168.192.in-addr.arpa /var/named/56.168.192.in-addr.arpa`
 ### 6. Nu hoef je enkel de service nog te starten (OF te herstarten indien je deze al had opgestart) 
   - Nu zal je ook instaat zijn `rndc querylog on` toe te passen
   - Nu kan je de testen gaan uitvoeren door `sudo /vagrant/tests/runtests.sh` en zie je dat het 2de deel (van ns2 dus) van de tests faalt
