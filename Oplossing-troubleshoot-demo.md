@@ -83,8 +83,34 @@
     - `named-checkzone 56.168.192.in-addr.arpa /var/named/56.168.192.in-addr.arpa`
 ### 6. Nu hoef je enkel de service nog te starten (OF te herstarten indien je deze al had opgestart) 
   - Nu zal je ook instaat zijn `rndc querylog on` toe te passen
-  - Nu kan je de testen gaan uitvoeren door `sudo /vagrant/tests/runtests.sh` en zie je dat het 2de deel van de tests faalt
+  - Nu kan je de testen gaan uitvoeren door `sudo /vagrant/tests/runtests.sh` en zie je dat het 2de deel (van ns2 dus) van de tests faalt
   - **Dit is normaal want je moet de named service in de slave server nog opstarten**
+  - Dit doe je in de volgende volgorde:
+      - Op ns1 ga je eerst nog de service herstarten met `sudo systemctl reload named.service`
+      - Op ns2 ga je dan `sudo systemctl stop named.service` en dan `sudo systemctl start named.service`
+      - Voer hierna de testen uit,deze zouden allen moeten slagen:
+            
+                [root@ns2 vagrant]# /vagrant/tests/runtests.sh
+                Testing 192.168.56.10
+                ✓ The dig command should be installed
+                ✓ It should return the NS record(s)
+                ✓ It should be able to resolve host names
+                ✓ It should be able to do reverse lookups
+                ✓ It should be able to resolve aliases
+                ✓ It should return the SRV record(s)
+
+                6 tests, 0 failures
+
+                Testing 192.168.56.11
+                ✓ The dig command should be installed
+                ✓ It should return the NS record(s)
+                ✓ It should be able to resolve host names
+                ✓ It should be able to do reverse lookups
+                ✓ It should be able to resolve aliases
+                ✓ It should return the SRV record(s)
+
+                6 tests, 0 failures
+
   
   
    
