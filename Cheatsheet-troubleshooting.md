@@ -126,7 +126,7 @@ vb. nmap -A -T4, nmap, -sS -sU
     - **Configuration files checken**
         * **Main configuration file**: `do named-checkconf /etc/named.conf`
             * Deze zou er dus zo moeten uitzien:
-                    // ...
+                   
                     
                     options {
                     listen-on port 53 { any; };
@@ -147,7 +147,7 @@ vb. nmap -A -T4, nmap, -sS -sU
                 - `named-checkzone example.com /var/named/example.conf`
                 - `named-checkzone 16.172.in-addr.arpa /var/named/16.172.in-addr.arpa`
     - * **Hoe de forward lookup zones er moeten uitzien (bijvoorbeeld bij example.com)**
-            //...
+            
             
               zone "example.com" IN {
                 type master;
@@ -185,9 +185,9 @@ vb. nmap -A -T4, nmap, -sS -sU
             Door **listen-on** en **allow-query** te wijzigen naar **any** ipv **localhost** zal elke host kunnen query'en naar deze                 host.
         * **End fully qualified domain names with a dot**
             - Uitvoer  zou dus zo moeten zijn:
-               //...
                
-                    www.hogent.be.	    2796	    IN	    A	    178.62.144.90 \
+               
+                    www.hogent.be.	    2796	    IN	    A	    178.62.144.90 
             -> Je kan dit testen met `$ORIGIN www.hogent.be.`
         * **Syntax errors in de config file**
             1.  Voer dan eerst `named-checkconf` uit om te kijken **VOOR HET STARTEN OF HERSTARTEN VAN DE NAMED SERVICE**
