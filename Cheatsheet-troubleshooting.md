@@ -147,7 +147,7 @@ vb. nmap -A -T4, nmap, -sS -sU
         * **gebruik van 'dig'**: `dig @DNS_SERVER_IP HOSTNAME`
             * *dig www.hogent.be @193.190.172.1 +short*  --> **Forward lookup**
             * *dig -x 178.62.144.92* --> **Reverse lookup**
-            * *dig NS hogent.be* --> **authoritve name server of hogent.be**
+            * *dig NS hogent.be* --> **authoritive name server of hogent.be**
             * *dig SOA hogent.be* --> **Start-of-Authority section of hogent.be**
             * *dig www.hogent.be*
             * *dig +short www.hogent.be*
